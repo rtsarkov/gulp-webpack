@@ -1,7 +1,7 @@
 import {test} from './modules/test.js'
-jQuery(document).ready(function ($) {
+import './modules/test2.js';
 test();
+
+$(function () {
+    console.log($('title').text());
 });
-
-
-

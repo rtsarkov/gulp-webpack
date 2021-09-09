@@ -10,12 +10,23 @@ import scssGlob from 'gulp-sass-glob';
 import svgSprite from 'gulp-svg-sprite';
 import webpack from 'webpack';
 import webpackStream from 'webpack-stream';
+import yargs from 'yargs';
+import { hideBin } from 'yargs/helpers';
 
+const argv = yargs(hideBin(process.argv)).argv;
+const isDevelopment = argv.dev == 1 ? 'development' : 'production';
 const webpackConfig = {
     output: {
       filename: 'main.js',
     },
-    mode: 'development',
+    mode: isDevelopment,
+    plugins: [
+        new webpack.ProvidePlugin({
+            $: 'jquery',
+            jQuery: 'jquery',
+            'window.jQuery': 'jquery'
+           })
+    ],
     module: {
       rules: [
         {
@@ -34,11 +45,11 @@ const webpackConfig = {
   };
 
 const settings = {
-    bitrixTemplate: 'main',
     prefixer: ['last 3 versions'],
     in_path: './app',
     out_path: './www'
 };
+
 const path = {
     build: {
         js: settings.out_path + '/js/',
@@ -46,7 +57,8 @@ const path = {
         fonts: settings.out_path + '/fonts/',
         svg: settings.out_path + '/images/svg/'
     },
-    src: { //Пути откуда брать исходники        
+    src: {     
+        js: settings.in_path + '/js/**/*.js', 
         style: settings.in_path + '/scss/**/*.scss',
         fonts: settings.in_path + '/fonts/**/*.{woff,woff2}',
         svg: settings.in_path + '/svg/*.svg'
@@ -77,7 +89,8 @@ export const css = () => {
 };
 
 export const js = () => {
-    return gulp.src('./app/js/app.js')
+    return gulp.src(path.src.js)
+        .pipe(sourcemaps.init())
         .pipe(webpackStream(webpackConfig), webpack)
         .pipe(plumber({
             errorHandler: (err) => {
@@ -111,7 +124,7 @@ export const fonts = () => {
 
 export const watchFiles = () => {
     gulp.watch(path.src.style, css);
-    gulp.watch('./app/js/app.js', js);
+    gulp.watch(path.src.js, js);
     gulp.watch(path.src.svg, svg);
     gulp.watch(path.src.fonts, fonts);
 }
