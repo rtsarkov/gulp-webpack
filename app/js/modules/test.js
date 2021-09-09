@@ -1,3 +1,1 @@
-export const test = () => {
-    console.log('t');
-}
+export const test = () => {}

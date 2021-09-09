@@ -3,5 +3,5 @@ import './modules/test2.js';
 test();
 
 $(function () {
-    console.log($('title').text());
+    
 });
