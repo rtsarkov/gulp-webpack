@@ -19,7 +19,6 @@ const gulp = require('gulp'),
 
 const argv = yargs(hideBin(process.argv)).argv;
 const mode = argv.dev == 1 ? 'development' : 'production';
-console.log(mode);
 const webpackConfig = {
     output: {
         filename: 'main.js',
