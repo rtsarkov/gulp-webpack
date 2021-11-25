@@ -5,7 +5,6 @@
   "author": "rtsarkov",
   "license": "ISC",
   "type": "module",
-  "private": true,
   "scripts": {
     "start": "gulp",
     "start dev": "gulp --dev=1"
