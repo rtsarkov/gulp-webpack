@@ -1,17 +1,20 @@
-import gulp from 'gulp';
-import prefixer from 'gulp-autoprefixer';
-import sass from 'gulp-sass';
-import sourcemaps from 'gulp-sourcemaps';
-import cssmin from 'gulp-minify-css';
-import include from 'gulp-include';
-import notify from 'gulp-notify';
-import plumber from 'gulp-plumber';
-import scssGlob from 'gulp-sass-glob';
-import svgSprite from 'gulp-svg-sprite';
-import webpack from 'webpack';
-import webpackStream from 'webpack-stream';
-import yargs from 'yargs';
-import { hideBin } from 'yargs/helpers';
+"use strict";
+const gulp = require('gulp');
+const prefixer = require('gulp-autoprefixer');
+const sass = require('gulp-sass');
+const sourcemaps = require('gulp-sourcemaps');
+const cssmin = require('gulp-minify-css');
+const include = require('gulp-include');
+const notify = require('gulp-notify');
+const plumber = require('gulp-plumber');
+const scssGlob = require('gulp-sass-glob');
+const svgSprite = require('gulp-svg-sprite');
+const webpack = require('webpack');
+const webpackStream = require('webpack-stream');
+const yargs = require('yargs');
+const hideBin = require('yargs/helpers').hideBin;
+const VueLoaderPlugin = require('vue-loader').VueLoaderPlugin;
+const concat = require('gulp-concat');
 
 const argv = yargs(hideBin(process.argv)).argv;
 const isDevelopment = argv.dev == 1 ? 'development' : 'production';
@@ -66,7 +69,7 @@ const path = {
 };
 
 
-export const css = () => {
+const css = () => {
     return gulp.src(path.src.style)
         .pipe(include())
         .pipe(plumber({
@@ -88,9 +91,10 @@ export const css = () => {
         .pipe(gulp.dest(path.build.css))
 };
 
-export const js = () => {
+const js = () => {
     return gulp.src(path.src.js)
         .pipe(sourcemaps.init())
+        .pipe(concat('app.js'))
         .pipe(webpackStream(webpackConfig), webpack)
         .pipe(plumber({
             errorHandler: (err) => {
@@ -103,7 +107,7 @@ export const js = () => {
         .pipe(gulp.dest(path.build.js));
 }
 
-export const svg = () => {
+const svg = () => {
     return gulp.src(path.src.svg)
         .pipe(svgSprite({
             mode: {
@@ -116,20 +120,24 @@ export const svg = () => {
     .pipe(gulp.dest(path.build.svg));
 }
 
-export const fonts = () => {
+const fonts = () => {
     return gulp.src(path.src.fonts)
         .pipe(gulp.dest(path.build.fonts));
 }
 
 
-export const watchFiles = () => {
+const watchFiles = () => {
     gulp.watch(path.src.style, css);
     gulp.watch(path.src.js, js);
     gulp.watch(path.src.svg, svg);
     gulp.watch(path.src.fonts, fonts);
 }
 
-export default gulp.series(
+exports.build = gulp.series(
+    gulp.parallel([css, js, svg, fonts])    
+);
+
+exports.default gulp.series(
     gulp.parallel([css, js, svg, fonts]),
     gulp.parallel(watchFiles)
 );
