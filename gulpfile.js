@@ -137,7 +137,7 @@ exports.build = gulp.series(
     gulp.parallel([css, js, svg, fonts])    
 );
 
-exports.default gulp.series(
+exports.default = gulp.series(
     gulp.parallel([css, js, svg, fonts]),
     gulp.parallel(watchFiles)
 );
