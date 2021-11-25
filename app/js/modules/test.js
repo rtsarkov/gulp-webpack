@@ -1,1 +1,3 @@
-export const test = () => {}
+export const test = () => {
+    console.log($('.lala').attr('class'));    
+}

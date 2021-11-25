@@ -1,18 +1,23 @@
-Для запуска в текущей директории выполнить команду `npm i`
+Для установки зависимостей в текущей директории выполнить команду `npm i`
 
-Для запуска использовать команду `gulp`
+Для запуска есть две команды
 
-По умолчанию webpack собирает production версию, если вам нужно development версию
-необходимо запустить gulp с параметром `gulp --dev=1`
+`npm run prod` для prodaction не составляет карту стилей и скриптов, минимизирует файл css
 
-Вывод файлов настраивается в файле gulpfile.js `out_path` 
+`npm run dev` для разработки, включает карты стилей и скритов, не минимизирует файл css
 
-Подключить svg sprite можно следующим образом
+Директория куда собираются файлы настраивается в gulpfile.js `settings.out_path` относительно файла gulpfile.js
 
-`<img src="/www/images/svg/sprite.svg#shopping-cart">`
+Шрифты лежат в директории fonts, подключаются в файле scss/_fonts.scss путь указывается относительно собранного файла
 
-или
+Svg иконки храняться в дректории svg. Подключить иконку svg из sprite можно следующим образом, где `shopping-cart` имя файла из 
+директории svg
 
-`<svg class="img">
-    <use xlink:href="/www/images/svg/sprite.svg#shopping-cart "></use>
+`<svg>
+    <use xlink:href="/www/images/svg/sprite.svg#shopping-cart"></use>
 </svg>`
+
+Если подключить файл спрайта в php `<? include($_SERVER['DOCUMENT_ROOT'] . '/images/svg/sprite.svg'); ?>`, 
+то путь до svg файла можно не писать, достаточно только #shopping-cart
+
+
