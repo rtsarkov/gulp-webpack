@@ -121,10 +121,10 @@ const svg = () => {
                     xmlDeclaration: false,
                     doctypeDeclaration: false,
                     namespaceIDs: false,
-                    dimensionAttributes: false 
+                    dimensionAttributes: false
                 },
                 mode: {
-                    symbol: {
+                    stack: {
                         sprite: "../sprite.svg"
                     }
                 },
