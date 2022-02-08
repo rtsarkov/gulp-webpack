@@ -49,6 +49,13 @@ const webpackConfig = {
                 test: /\.vue$/,
                 loader: 'vue-loader',
             },
+            {
+                test: /\.css$/,
+                use: [
+                    'vue-style-loader',
+                    'css-loader'
+                ]
+            }
         ],
     },
 };
@@ -67,7 +74,7 @@ const path = {
         svg: settings.out_path + '/images/svg/'
     },
     src: {
-        js: settings.in_path + '/js/**/*.js',
+        js: settings.in_path + '/js/**/*.{js,vue}',
         style: settings.in_path + '/scss/**/*.scss',
         fonts: settings.in_path + '/fonts/**/*.{woff, woff2, ttf, otf}',
         svg: settings.in_path + '/svg/*.svg'
