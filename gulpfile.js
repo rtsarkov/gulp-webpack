@@ -15,6 +15,8 @@ const gulp = require('gulp'),
     hideBin = require('yargs/helpers').hideBin,
     VueLoaderPlugin = require('vue-loader').VueLoaderPlugin,
     gulpIf = require('gulp-if'),
+    gulpStylelint = require('gulp-stylelint'),
+    eslint = require('gulp-eslint'),
     concat = require('gulp-concat');
 
 const argv = yargs(hideBin(process.argv)).argv;
@@ -104,6 +106,15 @@ const css = () => {
         .pipe(gulp.dest(path.build.css))
 };
 
+const scssLint = () => {
+    return gulp.src(path.src.style)
+    .pipe(gulpStylelint({
+        reporters: [
+          {formatter: 'string', console: true}
+        ]
+      }));
+}
+
 const js = () => {
     return gulp.src(path.src.js)
         .pipe(sourceMaps.init())
@@ -119,6 +130,13 @@ const js = () => {
         }))
         .pipe(gulpIf(mode == 'development', sourceMaps.write()))
         .pipe(gulp.dest(path.build.js));
+}
+
+const jsLint = () => {
+    return gulp.src([path.src.js, '!node_modules/**'])
+    .pipe(eslint())
+    .pipe(eslint.format())
+    .pipe(eslint.failAfterError());
 }
 
 const svg = () => {
@@ -154,8 +172,11 @@ const watchFiles = () => {
 }
 
 exports.build =  gulp.series(
-    gulp.parallel([css, js, svg, fonts])    
+    gulp.parallel([css, js, svg, fonts])
 );
+
+exports.testScss = gulp.series([scssLint]);
+exports.testJS = gulp.series([jsLint]);
 
 exports.default =  gulp.series(
     gulp.parallel([css, js, svg, fonts]),

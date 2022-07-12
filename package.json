@@ -5,8 +5,10 @@
   "author": "rtsarkov",
   "license": "ISC",
   "scripts": {
-    "prod": "gulp build",
-    "dev": "gulp --dev=1"
+    "prod": "gulp build",    
+    "dev": "gulp --dev=1",
+    "lint-style": "gulp testScss",
+    "lint-js": "gulp testJS"
   },
   "devDependencies": {
     "@babel/cli": "^7.15.4",
@@ -21,6 +23,7 @@
     "gulp": "^4.0.2",
     "gulp-autoprefixer": "^2.1.0",
     "gulp-concat": "^2.6.1",
+    "gulp-eslint": "^6.0.0",
     "gulp-if": "^3.0.0",
     "gulp-include": "^2.4.1",
     "gulp-jshint": "^2.1.0",
@@ -30,9 +33,13 @@
     "gulp-sass": "^4.1.1",
     "gulp-sass-glob": "^1.1.0",
     "gulp-sourcemaps": "^1.5.0",
+    "gulp-stylelint": "^13.0.0",
     "gulp-svg-sprite": "^1.5.0",
     "gulp-watch": "^5.0.1",
     "jshint": "^2.10.3",
+    "postcss": "^8.4.14",
+    "stylelint": "^14.9.1",
+    "stylelint-config-recommended-scss": "^7.0.0",
     "vue": "^2.6.14",
     "vue-loader": "^15.9.8",
     "vue-loader-plugin": "^1.3.0",
