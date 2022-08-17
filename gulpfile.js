@@ -87,17 +87,9 @@ const path = {
 const css = () => {
     return gulp.src(path.src.style)
         .pipe(sourceMaps.init())
-        .pipe(include())
-        .pipe(plumber({
-            errorHandler: (err) => {
-                notify.onError({
-                    title: "Ошибка в CSS",
-                    message: "<%= error.message %>"
-                })(err);
-            }
-        }))
+        .pipe(include())        
         .pipe(scssGlob())
-        .pipe(sass())
+        .pipe(sass().on('error', sass.logError))
         .pipe(prefixer({
             browsers: settings.prefixer
         }))
