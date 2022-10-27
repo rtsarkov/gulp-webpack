@@ -26,6 +26,7 @@ const webpackConfig = {
         filename: 'main.js',
     },
     mode: mode,
+    devtool: (() => (argv.dev === 1 ? 'source-map' : 'nosources-source-map'))(),
     plugins: [
         new webpack.ProvidePlugin({
             $: 'jquery',
@@ -109,7 +110,6 @@ const scssLint = () => {
 
 const js = () => {
     return gulp.src(path.src.js)
-        .pipe(sourceMaps.init())
         .pipe(concat('app.js'))
         .pipe(webpackStream(webpackConfig), webpack)
         .pipe(plumber({
@@ -120,7 +120,6 @@ const js = () => {
                 })(err);
             }
         }))
-        .pipe(gulpIf(mode == 'development', sourceMaps.write()))
         .pipe(gulp.dest(path.build.js));
 }
 
