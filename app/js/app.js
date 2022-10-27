@@ -1,4 +1,5 @@
-import { test } from './modules/test.js';
+import { test } from './modules/test';
+import './modules/TestModule';
 test();
 $(function () {
     

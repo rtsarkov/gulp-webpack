@@ -17,6 +17,7 @@ const gulp = require('gulp'),
     gulpIf = require('gulp-if'),
     gulpStylelint = require('gulp-stylelint'),
     eslint = require('gulp-eslint'),
+    fileinclude = require('gulp-file-include'),
     concat = require('gulp-concat');
 
 const argv = yargs(hideBin(process.argv)).argv;
@@ -35,6 +36,9 @@ const webpackConfig = {
         }),
         new VueLoaderPlugin()
     ],
+    resolve: {
+        extensions: ['.js', '.json', '.vue'],
+    },
     module: {
         rules: [
             {
@@ -74,13 +78,17 @@ const path = {
         js: settings.out_path + '/js/',
         css: settings.out_path + '/',
         fonts: settings.out_path + '/fonts/',
-        svg: settings.out_path + '/images/svg/'
+        svg: settings.out_path + '/images/svg/',
+        html: 'static/',
+        htmlModal: settings.out_path + '/ajax/form/'
     },
     src: {
         js: settings.in_path + '/js/**/*.{js,vue}',
         style: settings.in_path + '/scss/**/*.scss',
         fonts: settings.in_path + '/fonts/**/*.{woff, woff2, ttf, otf}',
-        svg: settings.in_path + '/svg/*.svg'
+        svg: settings.in_path + '/svg/*.svg',
+        html: `${settings.in_path}/html/**/*.html`,
+        htmlModal: `${settings.in_path}/html/modals/**/*.html`
     }
 };
 
@@ -110,6 +118,9 @@ const scssLint = () => {
 
 const js = () => {
     return gulp.src(path.src.js)
+        .pipe(eslint())
+        .pipe(eslint.format())
+        .pipe(eslint.formatEach('compact', process.stderr))
         .pipe(concat('app.js'))
         .pipe(webpackStream(webpackConfig), webpack)
         .pipe(plumber({
@@ -149,10 +160,35 @@ const svg = () => {
         .pipe(gulp.dest(path.build.svg));
 }
 
+const html = () => {
+    return gulp.src([
+        path.src.html,
+        `!${settings.in_path}/html/components/**/*.html`,
+        `!${settings.in_path}/html/modals/**/*.html`
+    ])
+        .pipe(fileinclude({prefix: '@@'}))
+        .pipe(gulp.dest(path.build.html))
+}
+
+const htmlModal = () => {
+    return gulp.src([path.src.htmlModal,])
+        .pipe(fileinclude())
+        .pipe(gulp.dest(path.build.htmlModal))
+}
+
 const fonts = () => {
     return gulp.src(path.src.fonts)
         .pipe(gulp.dest(path.build.fonts));
 }
+
+const buildTasks = [
+    css,
+    js,
+    svg,
+    fonts,
+    html,
+    htmlModal
+];
 
 
 const watchFiles = () => {
@@ -160,16 +196,18 @@ const watchFiles = () => {
     gulp.watch(path.src.js, js);
     gulp.watch(path.src.svg, svg);
     gulp.watch(path.src.fonts, fonts);
+    gulp.watch(path.src.html, html);
+    gulp.watch(path.src.html, htmlModal);
 }
 
-exports.build =  gulp.series(
-    gulp.parallel([css, js, svg, fonts])
+exports.build = gulp.series(
+    gulp.parallel(buildTasks)
 );
 
 exports.testScss = gulp.series([scssLint]);
 exports.testJS = gulp.series([jsLint]);
 
 exports.default =  gulp.series(
-    gulp.parallel([css, js, svg, fonts]),
+    gulp.parallel(buildTasks),
     gulp.parallel(watchFiles)
 );
