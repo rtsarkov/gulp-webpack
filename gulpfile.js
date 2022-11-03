@@ -1,7 +1,7 @@
 "use strict";
 const gulp = require('gulp'),
-    prefixer = require('gulp-autoprefixer'),
-    sass = require('gulp-sass'),
+    autoprefixer = require('gulp-autoprefixer'),
+    sass = require('gulp-sass')(require('sass')),
     sourceMaps = require('gulp-sourcemaps'),
     cssmin = require('gulp-minify-css'),
     include = require('gulp-include'),
@@ -30,9 +30,9 @@ const webpackConfig = {
     devtool: (() => (argv.dev === 1 ? 'source-map' : 'nosources-source-map'))(),
     plugins: [
         new webpack.ProvidePlugin({
-            $: 'jquery',
-            jQuery: 'jquery',
-            'window.jQuery': 'jquery'
+            // $: 'jquery',
+            // jQuery: 'jquery',
+            // 'window.jQuery': 'jquery'
         }),
         new VueLoaderPlugin()
     ],
@@ -99,9 +99,7 @@ const css = () => {
         .pipe(include())        
         .pipe(scssGlob())
         .pipe(sass().on('error', sass.logError))
-        .pipe(prefixer({
-            browsers: settings.prefixer
-        }))
+        .pipe(autoprefixer())
         .pipe(gulpIf(mode == 'production', cssmin()))
         .pipe(gulpIf(mode == 'development', sourceMaps.write()))
         .pipe(gulp.dest(path.build.css))

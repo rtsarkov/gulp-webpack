@@ -1,0 +1,5 @@
+# Ignore artifacts:
+*.html
+fonts
+svg
+static
